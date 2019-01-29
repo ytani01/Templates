@@ -26,25 +26,26 @@ def init_logger(name, debug):
 
 #####
 class TemplateClass:
-    def __init__(self, debug=False):
+    def __init__(self, arg1, debug=False):
         self.logger = init_logger(__class__.__name__, debug)
-        self.logger.debug('')
+        self.debug = debug
+        self.logger.debug('arg1 = %s', arg1)
 
-    # for 'with' statement
+        self.arg1 = arg1
+
     def __enter__(self):
-        self.logger.debug('')
+        self.logger.debug('enter \'with\' block')
+        return self.open()	# return 'self'
 
-        self.open()
-        return self
-
-    # for 'with' statement
     def __exit__(self, ex_type, ex_value, trace):
         self.logger.debug('(%s,%s,%s)', ex_type, ex_value, trace)
-
         self.close()
+        self.logger.debug('exit \'with\' block')
 
     def open(self):
         self.logger.debug('')
+
+        return self	# if ok return 'self'
 
     def close(self):
         self.logger.debug('')
@@ -53,25 +54,24 @@ class TemplateClass:
 class Sample:
     def __init__(self, arg1, debug=False):
         self.logger = init_logger(__class__.__name__, debug)
+        self.debug = debug
         self.logger.debug('arg1 = %s', arg1)
 
-        self.debug = debug
-
-        print('init')
+        self.arg1 = arg1
 
     def main(self):
-        print('start')
+        self.logger.debug('')
 
-        with TemplateClass(debug=self.debug) as a:
-            print('with block')
+        with TemplateClass(self.arg1, debug=self.debug) as a:
+            print('a = %s' % a)
 
-        print('end')
-
+    def finish(self):
+        self.logger.debug('')
 
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument('arg1', type=str, nargs=1)
+@click.argument('arg1', metavar='<arg1>', type=str, default='abc', nargs=1)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(arg1, debug):
@@ -79,7 +79,11 @@ def main(arg1, debug):
     logger.debug('arg1  = %s', arg1)
     logger.debug('debug = %s', debug)
 
-    Sample(arg1, debug=debug).main()
+    try:
+        obj = Sample(arg1, debug=debug)
+        obj.main()
+    finally:
+        obj.finish()
 
 if __name__ == '__main__':
     main()
