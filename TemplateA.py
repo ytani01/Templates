@@ -1,83 +1,82 @@
 #!/usr/bin/env python3
 #
-# (c) 2019 Yoichi Tanibayashi
+# (c) 2020 Yoichi Tanibayashi
 #
-import time
+"""
+Description
+"""
+__author__ = 'Yoichi Tanibayashi'
+__date__   = '2020'
 
+from MyLogger import get_logger
 import click
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO, WARN
-logger = getLogger(__name__)
-logger.setLevel(INFO)
-console_handler = StreamHandler()
-console_handler.setLevel(DEBUG)
-handler_fmt = Formatter(
-    '%(asctime)s %(levelname)s %(name)s.%(funcName)s> %(message)s',
-    datefmt='%H:%M:%S')
-console_handler.setFormatter(handler_fmt)
-logger.addHandler(console_handler)
-logger.propagate = False
-def get_logger(name, debug):
-    l = logger.getChild(name)
-    if debug:
-        l.setLevel(DEBUG)
-    else:
-        l.setLevel(INFO)
-    return l
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-#####
-CONST='abc'
 
-#####
-class A:
-    def __init__(self, word='', debug=False):
-        self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
-        self.logger.debug('word=%s', word)
+class TemplateClass:
+    _log = get_logger(__name__, False)
 
-        self.word = word
+    def __init__(self, opt, debug=False):
+        self._dbg = debug
+        __class__._log = get_logger(__class__.__name__, self._dbg)
+        self._log.debug('opt=%s')
 
-    def output(self):
-        for w in self.word:
-            print(w)
-            print(w[::-1])
+        self._opt = opt
 
-    def end(self):
-        self.logger.debug('')
+    def method1(self, arg):
+        self._log.debug('arg=%s', arg)
+
+        print('%s:%s' % (arg, self._opt))
+
+        self._log.debug('done')
         
-#####
-class Sample:
-    def __init__(self, word, debug=False):
-        self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
-        self.logger.debug('word=%s',word)
 
-        self.obj = A(word, debug=debug)
+class SampleApp:
+    _log = get_logger(__name__, False)
+
+    def __init__(self, arg, opt, debug=False):
+        self._dbg = debug
+        __class__._log = get_logger(__class__.__name__, self._dbg)
+        self._log.debug('arg=%s, opt=%s')
+
+        self._arg = arg
+        self._opt = opt
+
+        self.obj = TemplateClass(opt, debug=self._dbg)
 
     def main(self):
-        self.logger.debug('')
+        self._log.debug('')
 
-        self.obj.output()
+        for a in self._arg:
+            self.obj.method1(a)
+
+        self._log.debug('done')
 
     def end(self):
-        self.logger.debug('')
-        self.obj.end()
-        
-#####
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-@click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument('word', type=str, nargs=-1)
+        self._log.debug('')
+
+        self._log.debug('done')
+
+
+@click.command(context_settings=CONTEXT_SETTINGS, help='''
+Description
+''')
+@click.argument('arg', type=str, nargs=-1)
+@click.option('--opt', '-o', 'opt', type=str, default='def_value',
+              help='sample option')
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
-def main(word, debug):
-    logger = get_logger('', debug)
-    logger.debug('word=%s', word)
+def main(arg, opt, debug):
+    _log = get_logger(__name__, debug)
+    _log.debug('arg=%s, opt=%s', arg, opt)
 
-    obj = Sample(word, debug=debug)
+    app = SampleApp(arg, opt, debug=debug)
     try:
-        obj.main()
+        app.main()
     finally:
-        print('finally')
-        obj.end()
+        _log.debug('finally')
+        app.end()
+
 
 if __name__ == '__main__':
     main()
