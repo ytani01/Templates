@@ -50,6 +50,8 @@ class MyLogger:
         logger = self.logger.getChild(name)
         if debug in (NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL):
             logger.setLevel(debug)
+        elif type(debug) == int:
+            logger.setLevel(debug)
         elif debug:
             logger.setLevel(DEBUG)
         else:
