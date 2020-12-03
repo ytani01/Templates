@@ -61,7 +61,7 @@ class ClassA:
         self._log.debug('done')
 
 
-"""以下、サンプル"""
+# --- 以下、サンプル ---
 
 
 class SampleApp:
