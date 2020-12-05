@@ -10,7 +10,7 @@ Usage:
 from MyLogger import get_logger, DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 class A:
-    _log = get_logger(__name__, False)
+    __log = get_logger(__name__, False)
 
     def __init__(self, a, debug=False)
         self.debug = debug
@@ -18,7 +18,7 @@ class A:
         self.logger.debug('a=%s', a)
 
 class B:
-    _log = get_logger(__name__, False)
+    __log = get_logger(__name__, False)
 
     def __init__(self, a, debug=INFO)
         self.debug = debug
@@ -26,8 +26,8 @@ class B:
         self.logger.debug('a=%s', a)
 
 def main(debug):
-    _log = get_logger(__name__, debug)
-    _log.debug('')
+    __log = get_logger(__name__, debug)
+    __log.debug('')
 
 --
 

@@ -19,7 +19,7 @@ class ClassA:
     attr1: type(int|str|list of str ..)
         description
     """
-    _log = get_logger(__name__, False)
+    __log = get_logger(__name__, False)
 
     def __init__(self, opt, debug=False):
         """constructor
@@ -32,8 +32,8 @@ class ClassA:
             debug flag
         """
         self._dbg = debug
-        __class__._log = get_logger(__class__.__name__, self._dbg)
-        self._log.debug('opt=%s')
+        __class__.__log = get_logger(__class__.__name__, self._dbg)
+        self.__log.debug('opt=%s')
 
         self._opt = opt
 
@@ -42,9 +42,9 @@ class ClassA:
 
         Call at the end of program
         """
-        self._log.debug('doing ..')
+        self.__log.debug('doing ..')
         print('end of ClassA')
-        self._log.debug('done')
+        self.__log.debug('done')
 
     def method1(self, arg):
         """method1
@@ -54,11 +54,11 @@ class ClassA:
         arg: str
             description
         """
-        self._log.debug('arg=%s', arg)
+        self.__log.debug('arg=%s', arg)
 
         print('%s:%s' % (arg, self._opt))
 
-        self._log.debug('done')
+        self.__log.debug('done')
 
 
 # --- 以下、サンプル ---
@@ -72,7 +72,7 @@ class SampleApp:
     obj: ClassA
         description
     """
-    _log = get_logger(__name__, False)
+    __log = get_logger(__name__, False)
 
     def __init__(self, arg, opt, debug=False):
         """constructor
@@ -85,8 +85,8 @@ class SampleApp:
             description
         """
         self._dbg = debug
-        __class__._log = get_logger(__class__.__name__, self._dbg)
-        self._log.debug('arg=%s, opt=%s')
+        __class__.__log = get_logger(__class__.__name__, self._dbg)
+        self.__log.debug('arg=%s, opt=%s')
 
         self._arg = arg
         self._opt = opt
@@ -96,21 +96,21 @@ class SampleApp:
     def main(self):
         """main
         """
-        self._log.debug('')
+        self.__log.debug('')
 
         for a in self._arg:
             self.obj.method1(a)
 
-        self._log.debug('done')
+        self.__log.debug('done')
 
     def end(self):
         """end
 
         Call at the end of program.
         """
-        self._log.debug('doing ..')
+        self.__log.debug('doing ..')
         self.obj.end()
-        self._log.debug('done')
+        self.__log.debug('done')
 
 
 import click
@@ -128,14 +128,14 @@ Description
 def main(arg, opt, debug):
     """サンプル起動用メイン関数
     """
-    _log = get_logger(__name__, debug)
-    _log.debug('arg=%s, opt=%s', arg, opt)
+    __log = get_logger(__name__, debug)
+    __log.debug('arg=%s, opt=%s', arg, opt)
 
     app = SampleApp(arg, opt, debug=debug)
     try:
         app.main()
     finally:
-        _log.debug('finally')
+        __log.debug('finally')
         app.end()
 
 
