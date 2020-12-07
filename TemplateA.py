@@ -3,7 +3,7 @@
 # (c) 2020 Yoichi Tanibayashi
 #
 """
-Description
+Python3 template
 """
 __author__ = 'Yoichi Tanibayashi'
 __date__   = '2020'
@@ -43,7 +43,7 @@ class ClassA:
         Call at the end of program
         """
         self.__log.debug('doing ..')
-        print('end of ClassA')
+        print('end of %s' % __class__.__name__)
         self.__log.debug('done')
 
     def method1(self, arg):
