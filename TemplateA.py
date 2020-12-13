@@ -93,8 +93,6 @@ class SampleApp:
 
     Attributes
     ----------
-    obj: ClassA
-        description
     """
     __log = get_logger(__name__, False)
 
@@ -115,7 +113,7 @@ class SampleApp:
         self._arg = arg
         self._opt = opt
 
-        self.obj = ClassA(opt, debug=self._dbg)
+        self._obj = ClassA(opt, debug=self._dbg)
 
     def main(self):
         """ main routine
@@ -123,7 +121,7 @@ class SampleApp:
         self.__log.debug('')
 
         for a in self._arg:
-            self.obj.method1(a)
+            self._obj.method1(a)
 
         self.__log.debug('done')
 
@@ -131,7 +129,7 @@ class SampleApp:
         """ Call at the end of program.
         """
         self.__log.debug('doing ..')
-        self.obj.end()
+        self._obj.end()
         self.__log.debug('done')
 
 
