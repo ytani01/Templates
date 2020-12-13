@@ -118,7 +118,7 @@ class SampleApp:
         self.obj = ClassA(opt, debug=self._dbg)
 
     def main(self):
-        """main
+        """ main routine
         """
         self.__log.debug('')
 
@@ -128,9 +128,7 @@ class SampleApp:
         self.__log.debug('done')
 
     def end(self):
-        """end
-
-        Call at the end of program.
+        """ Call at the end of program.
         """
         self.__log.debug('doing ..')
         self.obj.end()
@@ -142,7 +140,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 @click.command(context_settings=CONTEXT_SETTINGS, help='''
-Description
+ClassA sample program
 ''')
 @click.argument('arg', type=str, nargs=-1)
 @click.option('--opt', '-o', 'opt', type=str, default='def_value',
