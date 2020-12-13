@@ -4,6 +4,16 @@
 #
 """
 Python3 template
+
+### for detail and simple usage ###
+
+$ pydoc3 TemplateA.ClassA
+
+
+### sample program ###
+
+$ ./TemplateA.py -h
+
 """
 __author__ = 'Yoichi Tanibayashi'
 __date__   = '2020'
@@ -12,7 +22,21 @@ from MyLogger import get_logger
 
 
 class ClassA:
-    """ClassA
+    """
+    Description
+    -----------
+
+    Simple Usage
+    ============
+    ## Import
+    
+    from TemplateA import ClassA
+
+    ## Initialize
+
+    obj = ClassA()
+
+    ============
 
     Attributes
     ----------
@@ -22,7 +46,7 @@ class ClassA:
     __log = get_logger(__name__, False)
 
     def __init__(self, opt, debug=False):
-        """constructor
+        """ Constructor
 
         Parameters
         ----------
@@ -38,8 +62,7 @@ class ClassA:
         self._opt = opt
 
     def end(self):
-        """end
-
+        """
         Call at the end of program
         """
         self.__log.debug('doing ..')
@@ -47,7 +70,8 @@ class ClassA:
         self.__log.debug('done')
 
     def method1(self, arg):
-        """method1
+        """
+        Description
 
         Parameters
         ----------
@@ -65,7 +89,7 @@ class ClassA:
 
 
 class SampleApp:
-    """Sample application class
+    """ Sample application class
 
     Attributes
     ----------
@@ -122,7 +146,7 @@ Description
 ''')
 @click.argument('arg', type=str, nargs=-1)
 @click.option('--opt', '-o', 'opt', type=str, default='def_value',
-              help='sample option')
+              help='sample option: default=%s', 'def_value')
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(arg, opt, debug):
