@@ -7,7 +7,7 @@ Python3 template
 
 ### for detail and simple usage ###
 
-$ python3 pydoc TemplateA.ClassA
+$ python3 -m pydoc TemplateA.ClassA
 
 
 ### sample program ###
