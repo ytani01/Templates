@@ -7,7 +7,7 @@ Python3 template
 
 ### for detail and simple usage ###
 
-$ pydoc3 TemplateA.ClassA
+$ python3 pydoc TemplateA.ClassA
 
 
 ### sample program ###
@@ -29,12 +29,22 @@ class ClassA:
     Simple Usage
     ============
     ## Import
-    
+
     from TemplateA import ClassA
 
     ## Initialize
 
     obj = ClassA()
+
+
+    ## method1
+
+    obj.method1(arg)
+
+
+    ## End of program
+
+    obj.end()
 
     ============
 
@@ -52,12 +62,10 @@ class ClassA:
         ----------
         opt: type
             description
-        debug: bool
-            debug flag
         """
         self._dbg = debug
         __class__.__log = get_logger(__class__.__name__, self._dbg)
-        self.__log.debug('opt=%s')
+        self.__log.debug('opt=%s', opt)
 
         self._opt = opt
 
@@ -108,12 +116,12 @@ class SampleApp:
         """
         self._dbg = debug
         __class__.__log = get_logger(__class__.__name__, self._dbg)
-        self.__log.debug('arg=%s, opt=%s')
+        self.__log.debug('arg=%s, opt=%s', arg, opt)
 
         self._arg = arg
         self._opt = opt
 
-        self._obj = ClassA(opt, debug=self._dbg)
+        self._obj = ClassA(self._opt, debug=self._dbg)
 
     def main(self):
         """ main routine
@@ -142,7 +150,7 @@ ClassA sample program
 ''')
 @click.argument('arg', type=str, nargs=-1)
 @click.option('--opt', '-o', 'opt', type=str, default='def_value',
-              help='sample option: default=%s', 'def_value')
+              help='sample option: default=%s' % 'def_value')
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(arg, opt, debug):
