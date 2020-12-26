@@ -3,7 +3,17 @@
 # (c) 2020 Yoichi Tanibayashi
 #
 """
-Description
+Python3 template
+
+### for detail and simple usage ###
+
+$ python3 -m pydoc TemplateA.ClassA
+
+
+### sample program ###
+
+$ ./TemplateA.py -h
+
 """
 __author__ = 'Yoichi Tanibayashi'
 __date__   = '2020'
@@ -12,7 +22,31 @@ from MyLogger import get_logger
 
 
 class ClassA:
-    """ClassA
+    """
+    Description
+    -----------
+
+    Simple Usage
+    ============
+    ## Import
+
+    from TemplateA import ClassA
+
+    ## Initialize
+
+    obj = ClassA()
+
+
+    ## method1
+
+    obj.method1(arg)
+
+
+    ## End of program
+
+    obj.end()
+
+    ============
 
     Attributes
     ----------
@@ -22,32 +56,30 @@ class ClassA:
     __log = get_logger(__name__, False)
 
     def __init__(self, opt, debug=False):
-        """constructor
+        """ Constructor
 
         Parameters
         ----------
         opt: type
             description
-        debug: bool
-            debug flag
         """
         self._dbg = debug
         __class__.__log = get_logger(__class__.__name__, self._dbg)
-        self.__log.debug('opt=%s')
+        self.__log.debug('opt=%s', opt)
 
         self._opt = opt
 
     def end(self):
-        """end
-
+        """
         Call at the end of program
         """
         self.__log.debug('doing ..')
-        print('end of ClassA')
+        print('end of %s' % __class__.__name__)
         self.__log.debug('done')
 
     def method1(self, arg):
-        """method1
+        """
+        Description
 
         Parameters
         ----------
@@ -65,12 +97,10 @@ class ClassA:
 
 
 class SampleApp:
-    """Sample application class
+    """ Sample application class
 
     Attributes
     ----------
-    obj: ClassA
-        description
     """
     __log = get_logger(__name__, False)
 
@@ -86,30 +116,28 @@ class SampleApp:
         """
         self._dbg = debug
         __class__.__log = get_logger(__class__.__name__, self._dbg)
-        self.__log.debug('arg=%s, opt=%s')
+        self.__log.debug('arg=%s, opt=%s', arg, opt)
 
         self._arg = arg
         self._opt = opt
 
-        self.obj = ClassA(opt, debug=self._dbg)
+        self._obj = ClassA(self._opt, debug=self._dbg)
 
     def main(self):
-        """main
+        """ main routine
         """
         self.__log.debug('')
 
         for a in self._arg:
-            self.obj.method1(a)
+            self._obj.method1(a)
 
         self.__log.debug('done')
 
     def end(self):
-        """end
-
-        Call at the end of program.
+        """ Call at the end of program.
         """
         self.__log.debug('doing ..')
-        self.obj.end()
+        self._obj.end()
         self.__log.debug('done')
 
 
@@ -118,11 +146,11 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 @click.command(context_settings=CONTEXT_SETTINGS, help='''
-Description
+ClassA sample program
 ''')
 @click.argument('arg', type=str, nargs=-1)
 @click.option('--opt', '-o', 'opt', type=str, default='def_value',
-              help='sample option')
+              help='sample option: default=%s' % 'def_value')
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(arg, opt, debug):
