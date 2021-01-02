@@ -18,6 +18,7 @@ HANDLER_FMT = Formatter(FMT_HDR + FMT_LOC + '%(message)s',
 
 CONSOLE_HANDLER = StreamHandler()
 CONSOLE_HANDLER.setFormatter(HANDLER_FMT)
+CONSOLE_HANDLER.setLevel(DEBUG)
 
 
 def get_logger(name, dbg=False):
@@ -25,27 +26,20 @@ def get_logger(name, dbg=False):
     get logger
     """
     logger = getLogger(name)
+    logger.propagate = False
+    logger.addHandler(CONSOLE_HANDLER)
+    logger.setLevel(INFO)
 
     # [Important !! ]
     # isinstance()では、boolもintと判定されるので、
     # 先に bool かどうかを判定する
 
-    if isinstance(dbg, bool):
-        if dbg:
-            CONSOLE_HANDLER.setLevel(DEBUG)
-            logger.setLevel(DEBUG)
-        else:
-            CONSOLE_HANDLER.setLevel(INFO)
-            logger.setLevel(INFO)
+    if isinstance(dbg, bool) and dbg:
+        logger.setLevel(DEBUG)
+        return logger
 
-    elif isinstance(dbg, int):
-        CONSOLE_HANDLER.setLevel(dbg)
+    if isinstance(dbg, int):
         logger.setLevel(dbg)
+        return logger
 
-    else:
-        raise ValueError('invalid `dbg` value: %s' % (dbg))
-
-    logger.propagate = False
-    logger.addHandler(CONSOLE_HANDLER)
-
-    return logger
+    raise ValueError('invalid `dbg` value: %s' % (dbg))
