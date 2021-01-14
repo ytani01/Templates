@@ -28,13 +28,15 @@ class Cmd1App:
         self._arg1 = arg1
         self._opt1 = opt1
 
-        self._obj = Mod1(self._arg1, debug=self._dbg)
+        self._obj = MyClass1(self._arg1, debug=self._dbg)
 
     def main(self):
         """ main """
         self._log.debug('start')
+
         ret = self._obj.func1(self._opt1)
-        print('ret=%s', ret)
+        print('ret =', ret)
+
         self._log.debug('done')
 
     def end(self):
@@ -49,7 +51,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 @click.group(invoke_without_command=True,
              context_settings=CONTEXT_SETTINGS, help="""
-
+mypkg1
 """)
 @click.pass_context
 def cli(ctx):
@@ -61,13 +63,13 @@ def cli(ctx):
 
 
 @cli.command(help="""
-""")
+test progaram""")
 @click.argument('arg1', type=str, nargs=-1)
 @click.option('--opt1', '-o', 'opt1', multiple=True, help='option 1')
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def cmd1(arg1, opt1, debug):
-    """  """
+    """ cmd1  """
     log = get_logger(__name__, debug)
 
     app = Cmd1App(arg1, opt1, debug=debug)

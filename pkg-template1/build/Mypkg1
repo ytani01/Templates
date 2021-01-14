@@ -4,6 +4,16 @@
 #
 
 MY_PKG="mypkg1"
+VENVDIR="/.0/home.localhost.1-ytani/ytani/env4-web"
 
 ### main
-echo $MY_PKG
+ACTIVATE=$VENVDIR/bin/activate
+
+if [ ! -f $ACTIVATE ]; then
+    echo "no such file: $ACTIVATE"
+    exit 1
+fi
+
+. $VENVDIR/bin/activate
+
+exec python -m $MY_PKG $*

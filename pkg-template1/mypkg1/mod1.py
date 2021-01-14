@@ -4,17 +4,19 @@
 from .my_logger import get_logger
 
 
-class Mod1:
+class MyClass1:
     """ """
     def __init__(self, param1, debug=False):
-        self.dbg = debug
+        self._dbg = debug
         self._log = get_logger(self.__class__.__name__, self._dbg)
-        self._dbg.debug('param1=%s', param1)
+        self._log.debug('param1=%s', param1)
 
         self._param1 = param1
 
     def func1(self, param1):
         self._log.debug('param1=%s', param1)
+
+        return (self._param1, param1)
 
     def end(self):
         self._log.debug('')

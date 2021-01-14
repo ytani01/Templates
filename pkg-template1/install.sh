@@ -81,7 +81,7 @@ install_external_python_pkg() {
         git clone $_GIT || exit 1
     fi
 
-    cd_echo $_DIR
+    cd_echo ./$_DIR
     git pull
     pip install .
     echo
@@ -162,7 +162,7 @@ if [ -z $VIRTUAL_ENV ]; then
         fi
     done
     echo "### activate venv"
-    . ../bin/activate
+    . ./bin/activate
 fi
 cd_echo $VIRTUAL_ENV
 
@@ -173,11 +173,15 @@ cd_echo $MYDIR
 
 echo "### build $WRAPPER_SCRIPT"
 sed -e "s?%%% MY_PKG %%%?$MY_PKG?" \
+    -e "s?%%% VENVDIR %%%?$VIRTUAL_ENV?" \
     $WRAPPER_SRC > $BUILD_DIR/$WRAPPER_SCRIPT
+
+chmod +x $BUILD_DIR/$WRAPPER_SCRIPT
 
 echo '-----'
 cat $BUILD_DIR/$WRAPPER_SCRIPT | sed -n -e '1,/\#* main/p'
 echo '  :'
+echo '-----'
 echo
 
 #
