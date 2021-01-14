@@ -19,7 +19,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Yoichi Tanibayashi',
-    author_email='yoichi@tanibayashi.jp',
+    author_email='',
     url='https://github.com/ytani01/Templates/',
     license='MIT',
     classifiers=[

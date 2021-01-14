@@ -5,7 +5,7 @@
 main for musicbox package
 """
 import click
-from . import Mod1
+from . import MyClass1, WebServer
 from .my_logger import get_logger
 
 __author__ = 'Yoichi Tanibayashi'
@@ -81,5 +81,33 @@ def cmd1(arg1, opt1, debug):
         log.info('end')
 
 
+@cli.command(help="""
+Web server""")
+@click.option('--port', '-p', 'port', type=int,
+              default=WebServer.DEF_PORT,
+              help='port number')
+@click.option('--webroot', '-r', 'webroot', type=click.Path(exists=True),
+              default=WebServer.DEF_WEBROOT,
+              help='Web root directory')
+@click.option('--workdir', '-w', 'workdir', type=click.Path(),
+              default=WebServer.DEF_WORKDIR,
+              help='work directory')
+@click.option('--size_limit', '-l', 'size_limit', type=int,
+              default=100*1024*1024,
+              help='upload size limit, default=%s' % (
+                  WebServer.DEF_SIZE_LIMIT))
+@click.option('--debug', '-d', 'debug', is_flag=True, default=False,
+              help='debug flag')
+def websvr(port, webroot, workdir, size_limit, debug):
+    """ cmd1  """
+    log = get_logger(__name__, debug)
+
+    app = WebServer(port, webroot, workdir, size_limit, debug=debug)
+    try:
+        app.main()
+    finally:
+        log.info('end')
+
+
 if __name__ == '__main__':
-    cli(prog_name='mypkg1')
+    cli(prog_name='Mypkg1')
