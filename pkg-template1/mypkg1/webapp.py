@@ -10,8 +10,10 @@ __date__ = '2021/01'
 
 import os
 import tornado.ioloop
+import tornado.httpserver
 import tornado.web
 from .handler1 import Handler1
+from .wshandler1 import WsHandler1
 from .my_logger import get_logger
 
 
@@ -19,7 +21,6 @@ class WebServer:
     """
     Web application server
     """
-
     DEF_PORT = 10080
 
     DEF_WEBROOT = './webroot/'
@@ -27,7 +28,7 @@ class WebServer:
 
     DEF_WORKDIR = '/tmp/mypkg1'
 
-    DEF_SIZE_LIMIT = 100*1024*1024
+    DEF_SIZE_LIMIT = 100*1024*1024  # 100MB
 
     def __init__(self, port=DEF_PORT,
                  webroot=DEF_WEBROOT, workdir=DEF_WORKDIR,
@@ -43,6 +44,8 @@ class WebServer:
 
         workdir: str
 
+        size_limit: int
+            max upload size
         """
         self._dbg = debug
         self._log = get_logger(self.__class__.__name__, self._dbg)
@@ -65,6 +68,7 @@ class WebServer:
                 (r'%s' % self.URL_PREFIX, Handler1),
                 (r'%s/' % self.URL_PREFIX, Handler1),
                 (r'%s/handler1.*' % self.URL_PREFIX, Handler1),
+                (r'%s/ws.*' % self.URL_PREFIX, WsHandler1),
             ],
             static_path=os.path.join(self._webroot, "static"),
             static_url_prefix=self.URL_PREFIX + '/static/',
@@ -78,10 +82,11 @@ class WebServer:
             size_limit=self._size_limit,
             debug=self._dbg
         )
-        self._log.debug(self._app.__dict__)
+        self._log.debug('app=%s', self._app.__dict__)
 
         self._svr = tornado.httpserver.HTTPServer(
             self._app, max_buffer_size=self._size_limit)
+        self._log.debug('svr=%s', self._svr.__dict__)
 
     def main(self):
         """ main """

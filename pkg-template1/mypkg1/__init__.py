@@ -10,7 +10,9 @@ __date__ = '2021/01'
 from .mod1 import MyClass1
 from .webapp import WebServer
 from .handler1 import Handler1
+from .wshandler1 import WsHandler1
 
 __all__ = [
-    'MyClass1', 'WebServer', 'Handler1'
+    'MyClass1',
+    'WebServer', 'Handler1', 'WsHandler1'
 ]

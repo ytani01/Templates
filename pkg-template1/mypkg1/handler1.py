@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# (c) 2020 Yoichi Tanibayashi
+# (c) 2021 Yoichi Tanibayashi
 #
 """
 Handler1
@@ -30,7 +30,7 @@ class Handler1(tornado.web.RequestHandler):
     def __init__(self, app, req):
         """ Constructor """
         self._dbg = app.settings.get('debug')
-        self._mylog = get_logger(__class__.__name__, self._dbg)
+        self._mylog = get_logger(self.__class__.__name__, self._dbg)
         self._mylog.debug('debug=%s', self._dbg)
         self._mylog.debug('app=%s', app)
         self._mylog.debug('req=%s', req)
