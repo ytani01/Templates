@@ -9,6 +9,7 @@ __author__ = 'Yoichi Tanibayashi'
 __date__ = '2021/01'
 
 import os
+import time
 import tornado.websocket
 from .my_logger import get_logger
 
@@ -60,7 +61,8 @@ class WsHandler1(tornado.websocket.WebSocketHandler):
     def on_message(self, msg):
         self._mylog.debug('msg=%s', msg)
 
-        msg = '\n%s>%s' % (self._req.remote_ip, msg)
+        msg = '\n[%s %s]\n%s' % (
+            time.strftime('%F %T'), self._req.remote_ip, msg)
         self._mylog.debug('msg=%s', msg)
 
         with open(self._msg_file, mode='a') as f:

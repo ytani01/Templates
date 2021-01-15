@@ -1,67 +1,72 @@
 /**
- * Music Box Web App
+ * simple chat
  *
- * (c) 2021 Yoichi Tanibayashi
+ *   (c) 2021 Yoichi Tanibayashi
  */
-const WsProtocol = location.protocol;
-const WsHost = location.hostname;
-const WsPort = location.port;
-console.log(`WsHost:WsPort=${WsHost}:${WsPort}`);
+const ID_MSG_AREA = "message_area";
+const ID_MY_NAME = "my_name";
+const ID_MY_MSG = "my_msg";
 
-let ws = undefined;
-let buf = '';
+const cookieObj = new MyCookie();
+let myName = "";
+
+/**
+ * 'http://host:port/aaa/bbb/' -> 'ws://host:port/aaa/ws'
+ * 'https://host:port/aaa/bbb/' -> 'wss://host:port/aaa/ws'
+ */
+const WS_PROTO = location.protocol.replace('http', 'ws');
+const WS_URL = `${WS_PROTO}//${location.host}/`
+      + `${location.pathname.split('/')[1]}/ws/`;
+console.log(`WS_URL=${WS_URL}`);
+
+/**
+ * websocket は、常に open の状態にして、メッセージ待ち受ける
+ *
+ *  - ``window.onload``, ``ws.onclose`` で、``connect_ws()``
+ *  - 送信時は、いきなり ``ws.send()``
+ */
+let wsObj = undefined;
 
 /**
  *
  */
-const get_url = () => {
-    let protocol = 'ws';
-    if ( WsProtocol == 'https:' ) {
-        protocol = 'wss';
-    }
-    
-    let url = `${protocol}://${WsHost}:${WsPort}/mypkg1/ws/`;
-    return url;
-};
+const connect_ws = () => {
+    wsObj = new WebSocket(WS_URL);
 
-/**
- *
- */
-const open = () => {
-    ws = new WebSocket(get_url());
-
-    ws.onopen = () => {
-        console.log(`onopen`);
-    };
-
-    ws.onclose = () => {
+    wsObj.onclose = () => {
         console.log(`onclose()`);
-        open();
+        const el = document.getElementById(ID_MSG_AREA);
+        el.value = '';
+        connect_ws();  // reconnect
     };
 
-    ws.onmessage = (event) => {
-        console.log(`onmessage(): ${event.data}`);
-
+    wsObj.onmessage = (event) => {
         const msg = event.data;
+        console.log(`onmessage(): msg=${msg}`);
 
-        const el = document.getElementById("message_area");
-        let msg_text = el.value;
-        msg_text += msg;
-
-        el.value = msg_text;
-        el.scrollTop = el.scrollHeight;
+        const el = document.getElementById(ID_MSG_AREA);
+        el.value += msg;
+        el.scrollTop = el.scrollHeight; // 最下部にスクロールする
     };
 };
 
 /**
- *
+ * @param {string} msg_id
  */
 const send_msg = () => {
-    const el = document.getElementById('message_in');
-    const msg = el.value;
-    el.value = '';
+    const el_msg = document.getElementById(ID_MY_MSG);
+    wsObj.send(`${myName}>${el_msg.value}`);
+    el_msg.value = '';
+};
 
-    ws.send(msg);
+/**
+ * @param {string} name_id
+ */
+const set_name = () => {
+    const el_name = document.getElementById(ID_MY_NAME);
+    myName = el_name.value;
+    console.log(`set_name("${ID_MY_NAME}"): ${myName}`);
+    cookieObj.set(ID_MY_NAME, myName);
 };
 
 /**
@@ -70,5 +75,14 @@ const send_msg = () => {
 window.onload = () => {
     console.log(`window.onload()`);
 
-    open();
+    connect_ws();
+
+    myName = cookieObj.get(ID_MY_NAME);
+    if (myName === undefined) {
+        myName = "";
+    }
+    console.log(`window.onload(): myName=${myName}`);
+
+    const el_name = document.getElementById(ID_MY_NAME);
+    el_name.value = myName;
 };

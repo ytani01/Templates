@@ -11,7 +11,10 @@
 
     <script type="text/javascript"
             src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
-    <script type="text/javascript" src="/mypkg1/static/js/my.js"></script>
+    <script type="text/javascript"
+            src="/mypkg1/static/js/my_cookie.js"></script>
+    <script type="text/javascript"
+            src="/mypkg1/static/js/my.js"></script>
   </head>
   <body style="background-color: lightgrey;">
     <header>
@@ -35,13 +38,15 @@
         <hr />
         <div class="row">
           <div class="col text-center">
-            <textarea id="message_area" cols="40" rows="4" maxlength="20"
+            <textarea id="message_area" cols="35" rows="10"
                       readonly
                       placeholder="メッセージ">
             </textarea>
             <br />
-            <input id="message_in" type="text" size="20"
-                   onchange="send_msg();" />
+            <input id="my_name" type="text" size="5"
+                   onChange="set_name();" />
+            <input id="my_msg" type="text" size="20"
+                   onChange="send_msg();" />
           </div> <!-- col -->
         </div> <!-- row -->
         <hr />
@@ -109,7 +114,7 @@
                     <input type="file" name="file1"
                            value=""
                            onchange="this.form.submit();"
-                           onclick="(el) => {e.target.value ='';};" />
+                           onclick="(el) => {el.target.value ='';};" />
                     <br />
                     ({{ size_limit }} {{ size_unit }}以下)
                   </div>

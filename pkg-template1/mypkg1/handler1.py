@@ -44,21 +44,13 @@ class Handler1(tornado.web.RequestHandler):
         super().__init__(app, req)
 
     def get_size_unit(self, f_size):
-        size_unit = 'B'
+        size_unit = ['B', 'KB', 'MB', 'GB', 'TB']
 
-        if f_size >= 1024:
+        while f_size >= 1024:
+            size_unit.pop(0)
             f_size /= 1024
-            size_unit = 'KB'
-            
-            if f_size >= 1024:
-                f_size /= 1024
-                size_unit = 'MB'
 
-                if f_size >= 1024:
-                    f_size /= 1024
-                    size_unit = 'GB'
-
-        return f_size, size_unit
+        return f_size, size_unit[0]
 
     def get_filesize(self, file_path):
         if not os.path.exists(file_path):
