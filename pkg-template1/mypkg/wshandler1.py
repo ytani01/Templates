@@ -38,8 +38,7 @@ class WsHandler1(tornado.websocket.WebSocketHandler):
         super().__init__(app, self._req)
 
     def open(self):
-        global Text
-
+        """ open """
         if self not in self.Client:
             self.Client.add(self)
 
@@ -57,8 +56,9 @@ class WsHandler1(tornado.websocket.WebSocketHandler):
             txt.rstrip('\n')
             self._mylog.debug('txt=%s', txt)
             self.write_message(txt)
-            
+
     def on_message(self, msg):
+        """ on_message """
         self._mylog.debug('msg=%s', msg)
 
         msg = '\n[%s %s]\n%s' % (
@@ -67,11 +67,12 @@ class WsHandler1(tornado.websocket.WebSocketHandler):
 
         with open(self._msg_file, mode='a') as f:
             f.write(msg)
-            
+
         for cl in self.Client:
             cl.write_message(msg)
 
     def on_close(self):
+        """ on_close """
         if self in self.Client:
             self.Client.remove(self)
 

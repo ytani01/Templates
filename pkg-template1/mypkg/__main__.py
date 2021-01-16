@@ -51,7 +51,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 @click.group(invoke_without_command=True,
              context_settings=CONTEXT_SETTINGS, help="""
-mypkg1
+mypkg
 """)
 @click.pass_context
 def cli(ctx):
@@ -96,13 +96,16 @@ Web server""")
               default=100*1024*1024,
               help='upload size limit, default=%s' % (
                   WebServer.DEF_SIZE_LIMIT))
+@click.option('--version', 'version', type=str, default='<current>',
+              help='version string')
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
-def websvr(port, webroot, workdir, size_limit, debug):
+def webapp(port, webroot, workdir, size_limit, version, debug):
     """ cmd1  """
     log = get_logger(__name__, debug)
 
-    app = WebServer(port, webroot, workdir, size_limit, debug=debug)
+    app = WebServer(port, webroot, workdir, size_limit, version,
+                    debug=debug)
     try:
         app.main()
     finally:
@@ -110,4 +113,4 @@ def websvr(port, webroot, workdir, size_limit, debug):
 
 
 if __name__ == '__main__':
-    cli(prog_name='Mypkg1')
+    cli(prog_name='Mypkg')

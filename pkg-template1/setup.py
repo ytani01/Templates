@@ -1,6 +1,23 @@
+#
+# (c) 2021 Yoichi Tanibayashi
+#
+"""
+setup.py for Python 3
+"""
+__author__ = 'Yoichi Tanibayashi'
+__copyright__ = 'Copyright 2021, Yoichi Tanibayashi'
+__credits__ = ['Yoichi Tanibayashi']
+
+__version__ = '0.0.1'
+__date__ = '2021/01'
+__email__ = 'yoichi@tanibayashi.jp'
+
 import os
-import sys
 from setuptools import setup, find_packages
+
+_PKG_NAME = 'mypkg'
+_URL = 'https://github.com/ytani01/Templates/'
+
 
 def read_requirements():
     """Parse requirements from requirements.txt."""
@@ -9,21 +26,23 @@ def read_requirements():
         requirements = [line.rstrip() for line in f]
     return requirements
 
+
 with open("README.md") as f:
     long_description =f.read()
 
 setup(
-    name='mypkg1',
-    version='0.0.1',
+    name=_PKG_NAME,
+    version=__version__,
     description='My package',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author='Yoichi Tanibayashi',
-    author_email='',
-    url='https://github.com/ytani01/Templates/',
+    author=__author__,
+    author_email=__email__,
+    url=_URL,
     license='MIT',
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3 :: Only",
     ],
     install_requires=read_requirements(),
     packages=find_packages(exclude=('tests', 'docs')),

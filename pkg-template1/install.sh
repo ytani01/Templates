@@ -12,14 +12,36 @@ help() {
 
  $HOME/ ... ホームディレクトリ
     |
-    +- bin/ ... シェルスクリプトなど
+    +- bin/ .. BINDIR シェルスクリプトなど
     |   |
-    |   +- Mypkg
-    |   +- boot-Mypkg.sh ... 起動スクリプト
+    |   +- Mypkg .. WRAPPER_SCRIPT
+    |   +- boot-Mypkg.sh .. 起動スクリプト
     |
-    +- env1/  ... python3 Virtualenv(venv) 【ユーザが作成する】
+    +- mypkg/ .. WORKDIR
+    |   |
+    |   +- log/
+    |   |
+    |   +- webroot/ .. WEBROOT
+    |   |   |
+    |   |   +- templates/
+    |   |   +- static/
+    |   |       |
+    |   |       +- css/
+    |   |       +- js/
+    |   |       +- images/
+    |   |       :
+    |   |
+    |   +- upload/
+    |   +- data/
+    |   :
+    |
+    +- env1/ .. python3 Virtualenv(venv) 【ユーザが作成する】
         |
-        +- repo1/ ... git repository
+        +- repo1/ .. MYDIR
+        |   |
+        |   +- build/ .. BUILD_DIR
+        |
+        +- subpackage1/
         |
         :
 
@@ -31,15 +53,30 @@ MYNAME=`basename $0`
 MYDIR=`dirname $0`
 
 
-WRAPPER_SCRIPT="Mypkg1"
+MY_PKG="mypkg"
+WRAPPER_SCRIPT="Mypkg"
 
+
+echo "MY_PKG=$MY_PKG"
+echo "WRAPPER_SCRIPT=$WRAPPER_SCRIPT"
+
+BINDIR="$HOME/bin"
+mkdir -pv $BINDIR
+
+WORKDIR="$HOME/$MY_PKG"
+echo "WORKDIR=$WORKDIR"
+mkdir -pv $WORKDIR
+
+WEBROOT="$WORKDIR/webroot"
+echo "WEBROOT=$WEBROOT"
+mkdir -pv $WEBROOT
+
+LOGDIR="$WORKDIR/log"
+echo "LOGDIR=$LOGDIR"
+mkdir -pv $LOGDIR
 
 WRAPPER_SRC="$WRAPPER_SCRIPT.in"
-MY_PKG=`echo $WRAPPER_SCRIPT | tr "A-Z" "a-z"`
-
-echo "WRAPPER_SCRIPT=$WRAPPER_SCRIPT"
 echo "WRAPPER_SRC=$WRAPPER_SRC"
-echo "MY_PKG=$MY_PKG"
 
 PKGS_TXT="pkgs.txt"
 
@@ -49,14 +86,13 @@ CUILIB_PKG="cuilib"
 CUILIB_DIR="CuiLib"
 CUILIB_GIT="${GITHUB_TOP}/${CUILIB_DIR}.git"
 
-BINDIR="$HOME/bin"
-mkdir -pv $BINDIR
-
 BUILD_DIR="$MYDIR/build"
 mkdir -pv $BUILD_DIR
 
 INSTALLED_FILE="$BUILD_DIR/installed"
 echo -n > $INSTALLED_FILE
+
+FAST_MODE=0
 
 #
 # fuctions
@@ -91,6 +127,7 @@ usage() {
     echo
     echo "  Usage: $MYNAME [-u] [-h]"
     echo
+    echo "    -f  fastmode"
     echo "    -u  uninstall"
     echo "    -h  show this usage"
     echo
@@ -118,12 +155,16 @@ uninstall() {
 # main
 #
 cd_echo $MYDIR
+MY_VERSION=`python setup.py --version`
+echo "MY_VERSION=$MY_VERSION"
+
 MYDIR=`pwd`
 echo "MYDIR=$MYDIR"
 echo
 
-while getopts uh OPT; do
+while getopts fuh OPT; do
     case $OPT in
+        f) FAST_MODE=1;echo "FAST_MODE=$FAST_MODE";;
         u) uninstall; exit 0;;
         h) usage; help; exit 0;;
         *) usage; exit 1;;
@@ -173,10 +214,14 @@ cd_echo $MYDIR
 
 echo "### build $WRAPPER_SCRIPT"
 sed -e "s?%%% MY_PKG %%%?$MY_PKG?" \
+    -e "s?%%% MY_VERSION %%%?$MY_VERSION?" \
     -e "s?%%% VENVDIR %%%?$VIRTUAL_ENV?" \
+    -e "s?%%% WORKDIR %%%?$WORKDIR?" \
+    -e "s?%%% WEBROOT %%%?$WEBROOT?" \
     $WRAPPER_SRC > $BUILD_DIR/$WRAPPER_SCRIPT
 
 chmod +x $BUILD_DIR/$WRAPPER_SCRIPT
+echo $BUILD_DIR/$WRAPPER_SCRIPT >> $INSTALLED_FILE
 
 echo '-----'
 cat $BUILD_DIR/$WRAPPER_SCRIPT | sed -n -e '1,/\#* main/p'
@@ -190,24 +235,37 @@ echo
 echo "### install scripts"
 echo
 cp -fv $BUILD_DIR/$WRAPPER_SCRIPT $BINDIR
-echo $BUILD_DIR/$WRAPPER_SCRIPT >> $INSTALLED_FILE
+echo $BINDIR/$WRAPPER_SCRIPT >> $INSTALLED_FILE
+echo
+
+#
+# work dir
+#
+cd_echo $MYDIR/webroot
+echo "### webroot"
+echo
+cp -rfv * $WEBROOT
 echo
 
 #
 # update pip, setuptools, and wheel
 #
-echo "### insall/update pip etc. .."
-echo
-pip install -U pip setuptools wheel
-hash -r
-echo
-pip -V
-echo
+if [ $FAST_MODE -lt 1 ]; then
+    echo "### insall/update pip etc. .."
+    echo
+    pip install -U pip setuptools wheel
+    hash -r
+    echo
+    pip -V
+    echo
+fi
 
 #
 # install my python packages
 #
-install_external_python_pkg $CUILIB_PKG $CUILIB_DIR $CUILIB_GIT
+if [ $FAST_MODE -lt 1 ]; then
+    install_external_python_pkg $CUILIB_PKG $CUILIB_DIR $CUILIB_GIT
+fi
 
 #
 # install my package
