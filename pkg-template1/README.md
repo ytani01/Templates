@@ -1,1 +1,6 @@
-# mypkg1
+# mypkg
+
+## ポイント
+
+* バージョンは、``python setup.py --version``を元にする
+

@@ -50,7 +50,9 @@ END
 
 ############################################################
 MYNAME=`basename $0`
-MYDIR=`dirname $0`
+cd `dirname $0`
+MYDIR=`pwd`
+echo "MYDIR=$MYDIR"
 
 
 MY_PKG="mypkg"
@@ -94,6 +96,7 @@ echo -n > $INSTALLED_FILE
 
 FAST_MODE=0
 
+echo
 #
 # fuctions
 #
@@ -157,9 +160,6 @@ uninstall() {
 cd_echo $MYDIR
 MY_VERSION=`python setup.py --version`
 echo "MY_VERSION=$MY_VERSION"
-
-MYDIR=`pwd`
-echo "MYDIR=$MYDIR"
 echo
 
 while getopts fuh OPT; do
