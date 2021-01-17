@@ -25,6 +25,7 @@ if [ x$VIRTUAL_ENV != x$VENVDIR ]; then
     fi
 fi
 echo "(VIRTUAL_ENV=$VIRTUAL_ENV)"
+echo
 
 if [ x$1 = xwebapp ]; then
     shift

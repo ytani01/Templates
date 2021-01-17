@@ -17,10 +17,12 @@
   +- setup.py
   +- setup.cfg
   +- entry_points.cfg
+  +- Pkg2.src
   +- install.sh
   +- pkg2/
       +- __init__.py
-      +- mod1.py
+      +- __main__.py
+      :
 ```
 
 ## Reference
