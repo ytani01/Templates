@@ -21,11 +21,11 @@ class WebServer:
     """
     Web application server
     """
-    URL_PREFIX = '/mypkg'
+    URL_PREFIX = '/pkg2'
 
     DEF_PORT = 10089
     DEF_WEBROOT = './webroot/'
-    DEF_WORKDIR = '/tmp/mypkg'
+    DEF_WORKDIR = '/tmp/pkg2'
     DEF_SIZE_LIMIT = 100*1024*1024  # 100MB
 
     def __init__(self, port=DEF_PORT,

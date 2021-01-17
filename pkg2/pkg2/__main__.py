@@ -5,7 +5,7 @@
 main for musicbox package
 """
 import click
-from . import MyClass1, WebServer
+from . import MyClass1, WebServer, __prog_name__
 from .my_logger import get_logger
 
 __author__ = 'Yoichi Tanibayashi'
@@ -113,4 +113,4 @@ def webapp(port, webroot, workdir, size_limit, version, debug):
 
 
 if __name__ == '__main__':
-    cli(prog_name='Mypkg')
+    cli(prog_name=__prog_name__)

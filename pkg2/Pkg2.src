@@ -28,7 +28,7 @@ echo "(VIRTUAL_ENV=$VIRTUAL_ENV)"
 
 if [ x$1 = xwebapp ]; then
     shift
-    exec python -m $MY_PKG webapp \
+    exec $MY_PKG webapp \
          --version $MY_VERSION \
          --workdir $WORKDIR --webroot $WEBROOT $*
 else

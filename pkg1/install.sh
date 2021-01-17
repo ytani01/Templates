@@ -55,44 +55,24 @@ MYDIR=`pwd`
 echo "MYDIR=$MYDIR"
 
 
-MY_PKG="mypkg"
-WRAPPER_SCRIPT="Mypkg"
+MY_PKG="pkg1"
+WRAPPER_SCRIPT="Pkg1"
 
 
 echo "MY_PKG=$MY_PKG"
 echo "WRAPPER_SCRIPT=$WRAPPER_SCRIPT"
 
 BINDIR="$HOME/bin"
-mkdir -pv $BINDIR
-
-WORKDIR="$HOME/$MY_PKG"
-echo "WORKDIR=$WORKDIR"
-mkdir -pv $WORKDIR
-
-WEBROOT="$WORKDIR/webroot"
-echo "WEBROOT=$WEBROOT"
-mkdir -pv $WEBROOT
-
-LOGDIR="$WORKDIR/log"
-echo "LOGDIR=$LOGDIR"
-mkdir -pv $LOGDIR
+BINFILES=
 
 WRAPPER_SRC="$WRAPPER_SCRIPT.in"
 echo "WRAPPER_SRC=$WRAPPER_SRC"
 
 PKGS_TXT="pkgs.txt"
 
-GITHUB_TOP="git@github.com:ytani01"
-
-CUILIB_PKG="cuilib"
-CUILIB_DIR="CuiLib"
-CUILIB_GIT="${GITHUB_TOP}/${CUILIB_DIR}.git"
-
 BUILD_DIR="$MYDIR/build"
-mkdir -pv $BUILD_DIR
 
 INSTALLED_FILE="$BUILD_DIR/installed"
-echo -n > $INSTALLED_FILE
 
 FAST_MODE=0
 
@@ -139,10 +119,12 @@ usage() {
 uninstall() {
     cd_echo $MYDIR
 
-    echo "### remove installed files"
-    echo
-    rm -f `cat $INSTALLED_FILE`
-    echo
+    if [ -f $INSTALLED_FILE ]; then
+        echo "### remove installed files"
+        echo
+        rm -f `cat $INSTALLED_FILE`
+        echo
+    fi
 
     echo "### uninstall my python package"
     echo
@@ -212,45 +194,52 @@ cd_echo $VIRTUAL_ENV
 #
 cd_echo $MYDIR
 
-echo "### build $WRAPPER_SCRIPT"
-sed -e "s?%%% MY_PKG %%%?$MY_PKG?" \
-    -e "s?%%% MY_VERSION %%%?$MY_VERSION?" \
-    -e "s?%%% VENVDIR %%%?$VIRTUAL_ENV?" \
-    -e "s?%%% WORKDIR %%%?$WORKDIR?" \
-    -e "s?%%% WEBROOT %%%?$WEBROOT?" \
-    $WRAPPER_SRC > $BUILD_DIR/$WRAPPER_SCRIPT
+if [ -f $WRAPPER_SRC ]; then
+    if [ ! -d $BUILD_DIR ]; then
+        mkdir -pv $BUILD_DIR
+        echo -n > $INSTALLED_FILE
+    fi
 
-chmod +x $BUILD_DIR/$WRAPPER_SCRIPT
-echo $BUILD_DIR/$WRAPPER_SCRIPT >> $INSTALLED_FILE
+    echo "### build $WRAPPER_SCRIPT"
+    sed -e "s?%%% MY_PKG %%%?$MY_PKG?" \
+        -e "s?%%% MY_VERSION %%%?$MY_VERSION?" \
+        -e "s?%%% VENVDIR %%%?$VIRTUAL_ENV?" \
+        -e "s?%%% WORKDIR %%%?$WORKDIR?" \
+        -e "s?%%% WEBROOT %%%?$WEBROOT?" \
+        $WRAPPER_SRC > $BUILD_DIR/$WRAPPER_SCRIPT
 
-echo '-----'
-cat $BUILD_DIR/$WRAPPER_SCRIPT | sed -n -e '1,/\#* main/p'
-echo '  :'
-echo '-----'
-echo
+    chmod +x $BUILD_DIR/$WRAPPER_SCRIPT
+    echo $BUILD_DIR/$WRAPPER_SCRIPT >> $INSTALLED_FILE
+
+    echo '-----'
+    cat $BUILD_DIR/$WRAPPER_SCRIPT | sed -n -e '1,/\#* main/p'
+    echo '  :'
+    echo '-----'
+    echo
+
+    
+    BINFILES="$BINFILES $BUILD_DIR/$WRAPPER_SCRIPT"    
+fi
 
 #
 # install scripts
 #
-echo "### install scripts"
+echo "### install script files to $BINDIR"
 echo
-cp -fv $BUILD_DIR/$WRAPPER_SCRIPT $BINDIR
-echo $BINDIR/$WRAPPER_SCRIPT >> $INSTALLED_FILE
-echo
-
-#
-# work dir
-#
-cd_echo $MYDIR/webroot
-echo "### webroot"
-echo
-cp -rfv * $WEBROOT
+if [ ! -z $BINFILES ]; then
+    if [ ! -d $BINDIR ]; then
+        mkdir -pv $BINDIR
+    fi
+    for f in $BINFILES; do
+        cp -fv $f $BINDIR
+    done
+fi
 echo
 
 #
 # update pip, setuptools, and wheel
 #
-if [ $FAST_MODE -lt 1 ]; then
+if [ $FAST_MODE -eq 0 ]; then
     echo "### insall/update pip etc. .."
     echo
     pip install -U pip setuptools wheel
@@ -263,9 +252,9 @@ fi
 #
 # install my python packages
 #
-if [ $FAST_MODE -lt 1 ]; then
-    install_external_python_pkg $CUILIB_PKG $CUILIB_DIR $CUILIB_GIT
-fi
+#if [ $FAST_MODE -eq 0 ]; then
+#    install_external_python_pkg $CUILIB_PKG $CUILIB_DIR $CUILIB_GIT
+#fi
 
 #
 # install my package
@@ -274,12 +263,4 @@ cd_echo $MYDIR
 echo "### install my python package"
 echo
 pip install .
-echo
-
-#
-# display usage
-#
-echo "### usage"
-echo
-$WRAPPER_SCRIPT -h
 echo
