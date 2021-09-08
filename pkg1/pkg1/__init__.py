@@ -1,8 +1,12 @@
 #
-# (c) 2021 Yoichi Tanibayashi
+# Copyright (c) 2021 Yoichi Tanibayashi
 #
-__version__ = '0.0.1'
+__prog_name__ = 'pkg1'
+__version__ = '0.0.3'
+__author__ = 'Yoichi Tanibayashi'
 
+from .my_logger import get_logger
 from .mod1 import func1
 
-all = ['func1']
+all = ['func1',
+       'get_logger', __prog_name__, __version__, __author__]

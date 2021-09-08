@@ -13,7 +13,9 @@ Python packge sample
   +- install.sh
   +- pkg1/
       +- __init__.py
-      +- mod1.py  
+      +- __main__.py
+      +- mod1.py
+
 
 ## Reference
 

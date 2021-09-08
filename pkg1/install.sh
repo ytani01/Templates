@@ -2,7 +2,7 @@
 #
 # Robot Music Box install script
 #
-#   (c) 2021 Yoichi Tanibayashi
+#   Copyright (C) 2021 Yoichi Tanibayashi
 #
 ############################################################
 help() {
@@ -14,10 +14,10 @@ help() {
     |
     +- bin/ .. BINDIR シェルスクリプトなど
     |   |
-    |   +- Mypkg .. WRAPPER_SCRIPT
-    |   +- boot-Mypkg.sh .. 起動スクリプト
+    |   +- Pkg1 .. WRAPPER_SCRIPT
+    |   +- boot-Pkg1.sh .. 起動スクリプト
     |
-    +- mypkg/ .. WORKDIR
+    +- pkg1/ .. WORKDIR
     |   |
     |   +- log/
     |   |
@@ -37,7 +37,7 @@ help() {
     |
     +- env1/ .. python3 Virtualenv(venv) 【ユーザが作成する】
         |
-        +- repo1/ .. MYDIR
+        +- pkg1_repo1/ .. MYDIR
         |   |
         |   +- build/ .. BUILD_DIR
         |
