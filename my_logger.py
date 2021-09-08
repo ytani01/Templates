@@ -1,5 +1,5 @@
 #
-# (c) 2020 Yoichi Tanibayashi
+# Copyright (c) 2020 Yoichi Tanibayashi
 #
 """
 my_logger.py

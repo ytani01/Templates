@@ -1,7 +1,7 @@
 #
-# Copyright (C) 2021 Yoichi Tanibayashi
+# Copyright (c) 2021 Yoichi Tanibayashi
 #
-from . import get_logger
+from .my_logger import get_logger
 
 
 def func1(arg='world', debug=False):
