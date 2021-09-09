@@ -2,7 +2,7 @@
 # Copyright (c) 2021 Yoichi Tanibayashi
 #
 import click
-from . import cmd2
+from . import cmd2, cmd3
 from . import __prog_name__, __version__, __author__
 from .my_logger import get_logger
 
@@ -23,6 +23,7 @@ def cli(ctx, opt0, debug):
     ctx.obj = {'opt0': opt0, 'debug': debug}
 
     subcmd = ctx.invoked_subcommand
+    __log.debug('subcmd=%s', subcmd)
 
     if not subcmd:
         print(ctx.get_help())
@@ -41,7 +42,7 @@ def cmd1(obj, arg1, opt1, debug):
 
 
 cli.add_command(cmd2)
-
+cli.add_command(cmd3)
 
 if __name__ == '__main__':
     cli(prog_name=__prog_name__)

@@ -3,7 +3,6 @@
 #
 import click
 from .my_logger import get_logger
-from .mod1 import func1
 
 
 @click.command(help="cmd2")
@@ -12,8 +11,8 @@ from .mod1 import func1
               help='debug flag')
 @click.pass_obj
 def cmd2(obj, arg1, debug):
-    """ cmd1 """
+    """ cmd2 """
     __log = get_logger(__name__, obj['debug'] or debug)
     __log.debug('obj=%s, arg1=%s', obj, arg1)
 
-    func1(arg1)
+    print('Hello, %s' % (arg1))
